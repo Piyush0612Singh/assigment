@@ -1,0 +1,18 @@
+from collections import Counter
+import re
+
+# Clean and split translated titles into words
+all_words = []
+for title in translated_titles:
+    words = re.findall(r'\w+', title.lower()) 
+    all_words.extend(words)
+
+# Count word frequencies
+word_counts = Counter(all_words)
+
+# Find repeated words (appearing more than twice)
+repeated_words = {word: count for word, count in word_counts.items() if count > 2}
+
+# Print repeated words and their counts
+for word, count in repeated_words.items():
+    print(f"Word: {word}, Count: {count}")
