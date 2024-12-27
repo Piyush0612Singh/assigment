@@ -1,0 +1,14 @@
+from googletrans import Translator
+
+# Initialize the Translator
+translator = Translator()
+
+# Translate article titles
+translated_titles = []
+for article in articles_data:
+    translated_title = translator.translate(article["title"], src='es', dest='en').text
+    translated_titles.append(translated_title)
+    print(f"Original Title: {article['title']}")
+    print(f"Translated Title: {translated_title}")
+
+# Output the translated titles
