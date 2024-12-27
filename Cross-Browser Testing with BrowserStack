@@ -1,0 +1,48 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.by import By
+import time
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+from browserstack.local import Local
+
+# Start BrowserStack Local for local testing
+local = Local()
+local_args = { "key": "YOUR_BROWSERSTACK_ACCESS_KEY" }
+local.start(**local_args)
+
+# BrowserStack capabilities
+desired_caps = {
+    'os': 'Windows',
+    'os_version': '10',
+    'browser': 'Chrome',
+    'browser_version': 'latest',
+    'name': 'Opinion Section Scraping',
+    'build': 'Python-Selenium-Test'
+}
+
+# Set up the WebDriver with BrowserStack URL
+driver = webdriver.Remote(
+    command_executor='https://<username>:<access_key>@hub-cloud.browserstack.com/wd/hub',
+    desired_capabilities=desired_caps)
+
+# Open El País and perform the same scraping tasks as before
+driver.get("https://elpais.com/opinion/")
+time.sleep(3)
+
+# Scrape articles, similar to the previous step
+articles = driver.find_elements(By.CSS_SELECTOR, "article")[:5]
+articles_data = []
+for article in articles:
+    title = article.find_element(By.CSS_SELECTOR, "h2").text
+    content = article.find_element(By.CSS_SELECTOR, ".a-content").text
+    articles_data.append({"title": title, "content": content})
+
+# Print the titles and content
+for idx, article in enumerate(articles_data):
+    print(f"Article {idx+1}: {article['title']}")
+    print(f"Content: {article['content'][:200]}...")  # Print first 200 chars
+
+# Stop BrowserStack Local
+local.stop()
